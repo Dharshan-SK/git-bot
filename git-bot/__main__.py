@@ -10,7 +10,7 @@ router = routing.Router()
 
 # Event handler for new issues
 @router.register("issues", action="opened")
-async def issue_opened_event(event, gh, *args, **kwargs):
+async def issue_opened_event(event, gh, *args, **kwargs): # hi
     """ Whenever an issue is opened, greet the author and say thanks. """
     url = event.data["issue"]["comments_url"]
     author = event.data["issue"]["user"]["login"]
