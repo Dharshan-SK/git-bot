@@ -4,6 +4,9 @@ from aiohttp import web
 
 from gidgethub import routing, sansio
 from gidgethub import aiohttp as gh_aiohttp
+from dotenv import load_dotenv
+
+load_dotenv(".env")
 
 routes = web.RouteTableDef()
 router = routing.Router()
@@ -23,7 +26,7 @@ async def main(request):
     body = await request.read()
     secret = os.environ.get("GH_SECRET")  # GitHub webhook secret
     oauth_token = os.environ.get("GH_AUTH")  # GitHub personal access token
-
+    print(secret, oauth_token)
     # Parse the incoming webhook event
     event = sansio.Event.from_http(request.headers, body, secret=secret)
     async with aiohttp.ClientSession() as session:
