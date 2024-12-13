@@ -1,3 +1,4 @@
+# https://github-bot-tutorial.readthedocs.io/en/latest/gidgethub-for-webhooks.html#say-thanks
 import os
 import aiohttp
 from aiohttp import web
@@ -10,7 +11,7 @@ load_dotenv(".env")
 routes = web.RouteTableDef()
 router = routing.Router()
 
-@router.register("pull_request", action="opened")
+@router.register("pull_request", action="opened") # https://docs.github.com/en/webhooks/webhook-events-and-payloads?actionType=edited#pull_request
 async def pr_opened_event(event, gh, *args, **kwargs):
     """
     Whenever a pull request is opened, calculate the code changes and post a comment.
@@ -21,10 +22,12 @@ async def pr_opened_event(event, gh, *args, **kwargs):
     owner = event.data["repository"]["owner"]["login"]
     repo = event.data["repository"]["name"]
     comments_url = event.data["pull_request"]["comments_url"]
-    
+    import pickle
+    with open('filename.pickle', 'wb') as handle:
+        pickle.dump(event, handle, protocol=pickle.HIGHEST_PROTOCOL)
     # Fetch pull request changes using GitHub API
     changes_url = f"/repos/{owner}/{repo}/pulls/{pr_number}/files"
-    changes_response = await gh.get(changes_url)
+    changes_response = await gh.getitem(changes_url)
     
     # Calculate the total number of additions, deletions, and changes
     total_additions = 0
@@ -59,7 +62,6 @@ async def main(request):
     secret = os.environ.get("GH_SECRET")
     oauth_token = os.environ.get("GH_AUTH")
 
-    # Parse webhook event
     event = sansio.Event.from_http(request.headers, body, secret=secret)
 
     async with aiohttp.ClientSession() as session:
