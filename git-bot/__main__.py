@@ -34,7 +34,10 @@ async def pr_opened_event(event, gh, *args, **kwargs):
     total_deletions = 0
     total_changes = 0
 
-    for file in changes_response:
+    for i, file in enumerate(changes_response):
+        import json
+        os.makedirs("changes", exist_ok=True)
+        json.dump(file, open(f"changes/{i}.json", "w"))
         total_additions += file["additions"]
         total_deletions += file["deletions"]
         total_changes += file["changes"]
